@@ -22,31 +22,31 @@ public class ContactListExceptionsTests {
 	};
 
 	@Test(expected=NameMustBeProvidedException.class)
-	public void shouldThrowIllegalOnNullNameWhenAdd() {
+	public void shouldThrowOnNullNameWhenAdd() {
 		invokeAddContact(null,EXAMPLE_PHONE);
 	}
 	@Test(expected=NameMustBeProvidedException.class)
-	public void shouldThrowIllegalOnEmptyNameWhenAdd() {
+	public void shouldThrowOnEmptyNameWhenAdd() {
 		invokeAddContact(EMPTY,EXAMPLE_PHONE);
 	}
 	@Test(expected=PhoneNumberMustBeProvidedException.class)
-	public void shouldThrowIllegalOnNullPhoneWhenAdd() {
+	public void shouldThrowOnNullPhoneWhenAdd() {
 		invokeAddContact(EXAMPLE_NAME, null);
 	}
 	@Test(expected=PhoneNumberMustBeProvidedException.class)
-	public void shouldThrowIllegalOnEmptyPhoneWhenAdd() {
+	public void shouldThrowOnEmptyPhoneWhenAdd() {
 		invokeAddContact(EXAMPLE_NAME, EMPTY);
 	}
 	@Test(expected=NameMustBeProvidedException.class)
-	public void shouldThrowIllegalOnNullNameWhenGet() {
+	public void shouldThrowOnNullNameWhenGet() {
 		invokeGetContactByName(null);
 	}
 	@Test(expected=NameMustBeProvidedException.class)
-	public void shouldThrowIllegalOnEmptyNameWhenGet() {
+	public void shouldThrowOnEmptyNameWhenGet() {
 		invokeGetContactByName(EMPTY);
 	}
 	@Test
-	public void shouldThrowIllegalOnWrongPhoneNumber() {
+	public void shouldThrowOnWrongPhoneNumber() {
 		int illegalCounter = 0;
 		for(String wrongPhone : WRONG_PHONE_NUMBERS) {
 			try {
