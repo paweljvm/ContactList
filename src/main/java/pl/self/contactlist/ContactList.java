@@ -5,19 +5,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import pl.self.contactlist.exception.NameMustBeProvidedException;
-import pl.self.contactlist.exception.PhoneNumberMustBeInValidFormatException;
-import pl.self.contactlist.exception.PhoneNumberMustBeProvidedException;
-import pl.self.contactlist.exception.PhoneNumberMustBeUniqueException;
-
 public class ContactList {
 
 	private final Map<String, Set<String>> dataContainer;
-	private final PhoneHelper phoneHelper;
-
+	private final ParametersChecker checker;
 	public ContactList() {
 		this.dataContainer = new ConcurrentHashMap<>();
-		phoneHelper = PhoneHelper.get();
+		this.checker = new ParametersChecker(PhoneHelper.get());
 	}
 	/**
 	 * 
@@ -44,7 +38,7 @@ public class ContactList {
 	 * @return phone number of contact or null if not present
 	 */
 	public String getContactByName(String name) {
-		Util.requireNotNullAndNotEmpty(name, NameMustBeProvidedException::new);
+		checker.checkName(name);
 		final Set<String> phones = dataContainer.get(name);
 		if (Util.isNotNullAndNotEmpty(phones)) {
 			return phones.iterator().next();
@@ -53,25 +47,8 @@ public class ContactList {
 	}
 
 	private void performParametersValidation(String name, String phoneNumber) {
-		Util.requireNotNullAndNotEmpty(name, NameMustBeProvidedException::new);
-		Util.requireNotNullAndNotEmpty(phoneNumber,
-				PhoneNumberMustBeProvidedException::new);
-		Util.require(phoneHelper::isNotValid, phoneNumber,
-				PhoneNumberMustBeInValidFormatException::new);
-		if (!dataContainer.isEmpty()) {
-			synchronized (this) {
-				Util.require(
-						phone -> dataContainer
-								.values()
-								.stream()
-								.flatMap(value -> value.stream())
-								.anyMatch(
-										existingPhone -> phoneHelper.areEqual(
-												existingPhone, phone)),
-						phoneNumber, PhoneNumberMustBeUniqueException::new);
-			}
-
-		}
+		checker.checkName(name);
+		checker.checkPhoneNumber(phoneNumber, dataContainer.values());
 	}
 
 }
